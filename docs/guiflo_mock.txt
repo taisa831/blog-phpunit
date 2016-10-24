@@ -1,0 +1,11 @@
+[TestCase]
+モックの呼び出し
+====> MockBuilder
+
+[MockBuilder]
+プロパティセット
+MockBuilderのプロパティをGeneratorに渡してモックを作成
+====> Generator
+
+[Generator]
+設定に合ったモックを作成

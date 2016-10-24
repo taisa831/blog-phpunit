@@ -35,7 +35,6 @@ class CalculationTest extends PHPUnit_Framework_TestCase {
         $calculation->setTotal(10);
         $result = $calculation->getTotal();
         $this->assertEquals('10', $result);
-
     }
 
     /**
@@ -60,7 +59,7 @@ class CalculationTest extends PHPUnit_Framework_TestCase {
     }
 
     /**
-     * NULL
+     * 空の配列
      * 全部無効化しない
      * コンストラクタは呼ばれない
      */
@@ -73,12 +72,42 @@ class CalculationTest extends PHPUnit_Framework_TestCase {
         $result = $calculation->getTotal(10);
         $this->assertEquals(10, $result);
     }
-    
+
+    /**
+     * 指定なし
+     * 全部モック化
+     * モックに設定を追加する
+     */
     public function test7() {
         $calculation = $this->createMock(Calculation::class);
         $calculation->method('getTotal')->willReturn(3);
-
         $result = $calculation->getTotal();
         $this->assertEquals(3, $result);
+    }
+
+    /**
+     * 指定なし
+     * 全部モック化
+     * モックに設定を追加する
+     */
+    public function test8() {
+        $configuration = ['getTotal' => 3];
+        $calculation = $this->createConfiguredMock(Calculation::class, $configuration);
+        $result = $calculation->getTotal();
+        $this->assertEquals(3, $result);
+    }
+
+    public function test9() {
+        $calculation = $this->createPartialMock(Calculation::class, ['getTotal']);
+        $calculation->expects($this->once())->method('getTotal')->willReturn(3);
+        $result = $calculation->increment2();
+        $this->assertEquals(4, $result);
+    }
+
+    public function test10() {
+        $calculation = $this->createPartialMock(Calculation::class, ['setTotal']);
+        $calculation->expects($this->once())->method('setTotal')->with(10);
+        $result = $calculation->increment3();
+        $this->assertEquals(1, $result);
     }
 }

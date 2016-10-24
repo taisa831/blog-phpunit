@@ -12,6 +12,17 @@ class Calculation {
         return $this->total += 1;
     }
 
+    public function increment2() {
+        $total = $this->getTotal();
+        $this->setTotal($total);
+        return $this->increment();
+    }
+
+    public function increment3() {
+        $this->setTotal(10);
+        return $this->increment();
+    }
+
     public function getTotal() {
         return $this->total;
     }

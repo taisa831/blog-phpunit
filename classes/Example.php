@@ -1,6 +1,6 @@
 <?php
 
-class Calculation {
+class Example {
 
     private $total = 0;
 
@@ -8,19 +8,18 @@ class Calculation {
         $this->total = 1;
     }
 
-    public function increment() {
+    public function plusA() {
         return $this->total += 1;
     }
 
-    public function increment2() {
-        $total = $this->getTotal();
-        $this->setTotal($total);
-        return $this->increment();
+    public function plusB() {
+        $this->total = $this->getTotal();
+        return $this->total += 1;
     }
 
-    public function increment3() {
+    public function plusC() {
         $this->setTotal(10);
-        return $this->increment();
+        return $this->total += 1;
     }
 
     public function getTotal() {

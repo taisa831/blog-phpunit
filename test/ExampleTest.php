@@ -1,6 +1,11 @@
 <?php
 require_once dirname(__FILE__) . '/../classes/Example.php';
 
+/**
+ * PHPUNITのモックオブジェクトの動作確認の為のテスト
+ *
+ * Class ExampleTest
+ */
 class ExampleTest extends PHPUnit_Framework_TestCase {
 
     /** @var Example $example */

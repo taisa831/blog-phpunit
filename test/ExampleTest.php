@@ -105,7 +105,7 @@ class ExampleTest extends PHPUnit_Framework_TestCase {
     }
 
     /**
-     * 一部スタブ化&期待値設定
+     * 一部スタブ化&期待値設定(1 test, 2 assertions)
      * 引数：クラスとメソッド
      * コンストラクタ：呼ばれない
      * メソッド：一部スタブ化

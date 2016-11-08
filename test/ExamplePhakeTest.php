@@ -12,7 +12,7 @@ class ExamplePhakeTest extends PHPUnit_Framework_TestCase {
     private $example;
 
     /**
-     * 全部スタブ化
+     * 全部スタブ化（static以外）
      * 引数：クラスのみ
      * コンストラクタ：呼ばれない
      * メソッド：全部スタブ化
@@ -22,9 +22,59 @@ class ExamplePhakeTest extends PHPUnit_Framework_TestCase {
         $result = $example->plusA();
         $this->assertNull($result);
 
-        //存在しないメソッドはこける
+        // staticはスタブ化しない
+        $result = Example::staticFunc();
+        $this->assertEquals(1, $result);
+
+        // 存在しないメソッドはこける
         //$result = $example->plusNon();
         //$this->assertNull($result);
+
+        // privateメソッドは直接呼べない
+        //$result = $example->plusD();
+    }
+
+    /**
+     * 全部スタブ化
+     * 引数：クラスのみ
+     * コンストラクタ：呼ばれない
+     * メソッド：staticメソッドをスタブ化
+     */
+    public function test_createMock_static() {
+        $example = \Phake::mock(Example::class);
+        \Phake::whenStatic($example)->staticFunc()->thenReturn(2);
+        $result = $example::staticFunc();
+        $this->assertEquals(2, $result);
+    }
+
+    /**
+     * 全部スタブ化
+     * 引数：クラスのみ
+     * コンストラクタ：呼ばれない
+     * メソッド：privateメソッドをスタブ化
+     */
+    public function test_createMock_private() {
+        $example = \Phake::mock(Example::class);
+        // そのまま呼び出す設定
+        \Phake::when($example)->plusD()->thenCallParent();
+        // 直接は呼び出せないのでmakeVisibleにてプロキシして実行確認可能
+        $result = \Phake::makeVisible($example)->plusD();
+        $this->assertEquals(1, $result);
+    }
+
+    /**
+     * 全部モック
+     * 引数：クラスのみ
+     * コンストラクタ：呼ばれない
+     * メソッド：privateメソッドをスタブ化
+     */
+    public function test_createPartialMock_private() {
+        $example = \Phake::mock(Example::class);
+        // スタブ化
+        \Phake::when($example)->plusD()->thenReturn(5);
+        // 直接は呼び出せないのでmakeVisibleにてプロキシして実行確認可能
+        $result = \Phake::makeVisible($example)->plusD();
+        $this->assertEquals(5, $result);
     }
 
     /**
@@ -64,5 +114,9 @@ class ExamplePhakeTest extends PHPUnit_Framework_TestCase {
         $result = $this->example->plusC();
         $this->assertEquals(11, $result);
         \Phake::verify($this->example, \Phake::times(1))->setTotal(10);
+    }
+
+    public function tearDown() {
+        Phake::resetStaticInfo();
     }
 }

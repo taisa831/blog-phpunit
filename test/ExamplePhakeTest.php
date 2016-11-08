@@ -12,33 +12,31 @@ class ExamplePhakeTest extends PHPUnit_Framework_TestCase {
     private $example;
 
     /**
-     * 全部スタブ化（static以外）
+     * 全部スタブアウト
      * 引数：クラスのみ
      * コンストラクタ：呼ばれない
-     * メソッド：全部スタブ化
      */
     public function test_createMock_all() {
         $example = \Phake::mock(Example::class);
         $result = $example->plusA();
         $this->assertNull($result);
 
-        // staticはスタブ化しない
-        $result = Example::staticFunc();
-        $this->assertEquals(1, $result);
+        $result = $example::staticFunc();
+        $this->assertNull($result);
+
+        // privateは直接呼べない
+        //$result = $example->plusD();
 
         // 存在しないメソッドはこける
         //$result = $example->plusNon();
         //$this->assertNull($result);
-
-        // privateメソッドは直接呼べない
-        //$result = $example->plusD();
     }
 
     /**
-     * 全部スタブ化
+     * 全部スタブアウト
+     * staticメソッドをスタブ化
      * 引数：クラスのみ
      * コンストラクタ：呼ばれない
-     * メソッド：staticメソッドをスタブ化
      */
     public function test_createMock_static() {
         $example = \Phake::mock(Example::class);
@@ -48,10 +46,10 @@ class ExamplePhakeTest extends PHPUnit_Framework_TestCase {
     }
 
     /**
-     * 全部スタブ化
+     * 全部スタブアウト
+     * privateメソッドを元の処理で呼び出す
      * 引数：クラスのみ
      * コンストラクタ：呼ばれない
-     * メソッド：privateメソッドをスタブ化
      */
     public function test_createMock_private() {
         $example = \Phake::mock(Example::class);
@@ -63,10 +61,10 @@ class ExamplePhakeTest extends PHPUnit_Framework_TestCase {
     }
 
     /**
-     * 全部モック
+     * 全部スタブアウト
+     * privateメソッドをスタブ化
      * 引数：クラスのみ
      * コンストラクタ：呼ばれない
-     * メソッド：privateメソッドをスタブ化
      */
     public function test_createPartialMock_private() {
         $example = \Phake::mock(Example::class);
@@ -81,7 +79,6 @@ class ExamplePhakeTest extends PHPUnit_Framework_TestCase {
      * 指定したメソッドのみスタブ化
      * 引数：クラス（コンストラクタに値を渡す場合は引数追加）
      * コンストラクタ：呼ばれる
-     * メソッド：指定したメソッドだけスタブ化
      */
     public function test_partialMock() {
         $this->example = \Phake::partialMock(Example::class);
@@ -92,10 +89,9 @@ class ExamplePhakeTest extends PHPUnit_Framework_TestCase {
     }
 
     /**
-     * 全部スタブ化しない
+     * 全部元の処理を呼べる
      * 引数：クラス（コンストラクタに値を渡す場合は引数追加）
      * コンストラクタ：呼ばれる
-     * メソッド：全部スタブ化しない
      */
     public function test_partialMock_non() {
         $this->example = \Phake::partialMock(Example::class);
@@ -104,7 +100,8 @@ class ExamplePhakeTest extends PHPUnit_Framework_TestCase {
     }
 
     /**
-     * 一部スタブ化&期待値設定(1 test, 2 assertions)
+     * 全部元の処理を呼べる
+     * 期待動作確認(1 test, 2 assertions)
      * 引数：クラス（コンストラクタに値を渡す場合は引数追加）
      * コンストラクタ：呼ばれる
      * メソッド：全部スタブ化しない
@@ -117,6 +114,6 @@ class ExamplePhakeTest extends PHPUnit_Framework_TestCase {
     }
 
     public function tearDown() {
-        Phake::resetStaticInfo();
+        \Phake::resetStaticInfo();
     }
 }

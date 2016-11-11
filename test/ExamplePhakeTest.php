@@ -1,5 +1,5 @@
 <?php
-require_once dirname(__FILE__) . '/../classes/Example.php';
+require_once dirname(__FILE__) . '/../src/Example.php';
 
 /**
  * Phakeの動作確認の為のテスト

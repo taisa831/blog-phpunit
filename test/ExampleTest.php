@@ -197,4 +197,33 @@ class ExampleTest extends PHPUnit_Framework_TestCase {
         $result = $this->example->plusC();
         $this->assertEquals(11, $result);
     }
+
+    //
+    // private
+    //
+
+    /**
+     * privateメソッドはスタブ化されない
+     * 引数：クラスのみ
+     * コンストラクタ：呼ばれない
+     * メソッド：全部スタブ化
+     */
+    public function test_createMock_all_private() {
+        $this->example = $this->createMock(Example::class);
+
+        $result = $this->example->plusA();
+        $this->assertNull($result);
+
+        $result = $this->example->plusB();
+        $this->assertNull($result);
+
+        $result = $this->example->plusC();
+        $this->assertNull($result);
+
+        $reflect = new ReflectionMethod($this->example, 'plusD');
+        $reflect->setAccessible(true);
+        $result = $reflect->invoke($this->example);
+        //$result = $reflect->invokeArgs($this->example, []);
+        $this->assertEquals(1, $result);
+    }
 }

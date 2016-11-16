@@ -16,7 +16,7 @@ class ExampleTest extends PHPUnit_Framework_TestCase {
     //
 
     /**
-     * 全部スタブ化
+     * 全部メソッドスタブ化
      * 引数：クラスのみ
      * コンストラクタ：呼ばれない
      * メソッド：全部スタブ化
@@ -24,6 +24,12 @@ class ExampleTest extends PHPUnit_Framework_TestCase {
     public function test_createMock_all() {
         $this->example = $this->createMock(Example::class);
         $result = $this->example->plusA();
+        $this->assertNull($result);
+
+        $result = $this->example->plusB();
+        $this->assertNull($result);
+
+        $result = $this->example->plusC();
         $this->assertNull($result);
     }
 
@@ -35,8 +41,15 @@ class ExampleTest extends PHPUnit_Framework_TestCase {
      */
     public function test_createPartialMock_non() {
         $this->example = $this->createPartialMock(Example::class, []);
-        $result = $this->example->plusB();
+
+        $result = $this->example->plusA();
         $this->assertEquals(1, $result);
+
+        $result = $this->example->plusB();
+        $this->assertEquals(2, $result);
+
+        $result = $this->example->plusC();
+        $this->assertEquals(11, $result);
     }
 
     /**
@@ -47,8 +60,16 @@ class ExampleTest extends PHPUnit_Framework_TestCase {
      */
     public function test_createPartialMock_partial() {
         $this->example = $this->createPartialMock(Example::class, ['getTotal']);
+
+        $result = $this->example->plusA();
+        $this->assertEquals(1, $result);
+
+        // getTotalは振る舞いを設定していないためnullとなるがエラーにはならない
         $result = $this->example->plusB();
         $this->assertEquals(1, $result);
+
+        $result = $this->example->plusC();
+        $this->assertEquals(11, $result);
     }
 
     /**
@@ -60,12 +81,19 @@ class ExampleTest extends PHPUnit_Framework_TestCase {
     public function test_createPartialMock_setStubMethod() {
         $this->example = $this->createPartialMock(Example::class, ['getTotal']);
         $this->example->expects($this->once())->method('getTotal')->willReturn(3);
+
+        $result = $this->example->plusA();
+        $this->assertEquals(1, $result);
+
         $result = $this->example->plusB();
         $this->assertEquals(4, $result);
+
+        $result = $this->example->plusC();
+        $this->assertEquals(11, $result);
     }
 
     /**
-     * 一部スタブ化&期待値設定(1 test, 2 assertions)
+     * 一部スタブ化&期待値設定(1 test, 4 assertions)
      * 引数：クラスとメソッド
      * コンストラクタ：呼ばれない
      * メソッド：一部スタブ化
@@ -73,8 +101,16 @@ class ExampleTest extends PHPUnit_Framework_TestCase {
     public function test_createPartialMock_setStubMethod2() {
         $this->example = $this->createPartialMock(Example::class, ['setTotal']);
         $this->example->expects($this->once())->method('setTotal')->with(10);
-        $result = $this->example->plusC();
+
+        $result = $this->example->plusA();
         $this->assertEquals(1, $result);
+
+        $result = $this->example->plusA();
+        $this->assertEquals(2, $result);
+
+        // setTotalは期待値の設定はあるが振る舞いはないので実行はされない
+        $result = $this->example->plusC();
+        $this->assertEquals(3, $result);
     }
 
     /**
@@ -86,8 +122,18 @@ class ExampleTest extends PHPUnit_Framework_TestCase {
     public function test_createConfiguredMock_setStubMethod() {
         $configuration = ['getTotal' => 3];
         $this->example = $this->createConfiguredMock(Example::class, $configuration);
+
+        $result = $this->example->plusA();
+        $this->assertNull($result);
+
         $result = $this->example->plusB();
         $this->assertNull($result);
+
+        $result = $this->example->plusC();
+        $this->assertNull($result);
+
+        $result = $this->example->getTotal();
+        $this->assertEquals(3, $result);
     }
 
     //
@@ -102,7 +148,14 @@ class ExampleTest extends PHPUnit_Framework_TestCase {
      */
     public function test_getMock_all() {
         $this->example = $this->getMock(Example::class);
+
         $result = $this->example->plusA();
+        $this->assertNull($result);
+
+        $result = $this->example->plusB();
+        $this->assertNull($result);
+
+        $result = $this->example->plusC();
         $this->assertNull($result);
     }
 
@@ -114,8 +167,15 @@ class ExampleTest extends PHPUnit_Framework_TestCase {
      */
     public function test_getMock_non() {
         $this->example = $this->getMock(Example::class, NULL);
-        $result = $this->example->plusB();
+
+        $result = $this->example->plusA();
         $this->assertEquals(2, $result);
+
+        $result = $this->example->plusB();
+        $this->assertEquals(3, $result);
+
+        $result = $this->example->plusC();
+        $this->assertEquals(11, $result);
     }
 
     /**
@@ -126,7 +186,15 @@ class ExampleTest extends PHPUnit_Framework_TestCase {
      */
     public function test_getMock_partial() {
         $this->example = $this->getMock(Example::class, ['getTotal']);
+
+        $result = $this->example->plusA();
+        $this->assertEquals(2, $result);
+
+        // getTotalは振る舞いを設定していないためnullとなるがエラーにはならない
         $result = $this->example->plusB();
         $this->assertEquals(1, $result);
+
+        $result = $this->example->plusC();
+        $this->assertEquals(11, $result);
     }
 }

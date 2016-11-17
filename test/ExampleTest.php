@@ -17,6 +17,7 @@ class ExampleTest extends PHPUnit_Framework_TestCase {
 
     /**
      * 全部メソッドスタブ化
+     *
      * 引数：クラスのみ
      * コンストラクタ：呼ばれない
      * メソッド：全部スタブ化
@@ -35,6 +36,7 @@ class ExampleTest extends PHPUnit_Framework_TestCase {
 
     /**
      * 全部スタブ化しない
+     *
      * 引数：クラスと空の配列
      * コンストラクタ：呼ばれない
      * メソッド：全部スタブ化しない
@@ -54,6 +56,7 @@ class ExampleTest extends PHPUnit_Framework_TestCase {
 
     /**
      * 一部スタブ化
+     *
      * 引数：クラスとメソッド
      * コンストラクタ：呼ばれない
      * メソッド：指定したメソッドだけスタブ化
@@ -74,6 +77,7 @@ class ExampleTest extends PHPUnit_Framework_TestCase {
 
     /**
      * 一部スタブ化&返り値指定
+     *
      * 引数：クラスとメソッド
      * コンストラクタ：呼ばれない
      * メソッド：一部スタブ化&返り値指定
@@ -94,6 +98,7 @@ class ExampleTest extends PHPUnit_Framework_TestCase {
 
     /**
      * 一部スタブ化&期待値設定(1 test, 4 assertions)
+     *
      * 引数：クラスとメソッド
      * コンストラクタ：呼ばれない
      * メソッド：一部スタブ化
@@ -115,6 +120,7 @@ class ExampleTest extends PHPUnit_Framework_TestCase {
 
     /**
      * 全部スタブ化&返り値指定（同時設定）
+     *
      * 引数：クラスと返り値指定した配列
      * コンストラクタ：呼ばれない
      * メソッド：全部スタブ化&返り値設定
@@ -142,6 +148,7 @@ class ExampleTest extends PHPUnit_Framework_TestCase {
 
     /**
      * 全部スタブ化
+     *
      * 引数：クラスのみ
      * コンストラクタ：呼ばれる
      * メソッド：全部スタブ化
@@ -161,6 +168,7 @@ class ExampleTest extends PHPUnit_Framework_TestCase {
 
     /**
      * 全部スタブ化しない
+     *
      * 引数：クラスとNULL
      * コンストラクタ：呼ばれる
      * メソッド：全部スタブ化しない
@@ -180,6 +188,7 @@ class ExampleTest extends PHPUnit_Framework_TestCase {
 
     /**
      * 一部スタブ化
+     *
      * 引数：クラスとメソッド
      * コンストラクタ：呼ばれる
      * メソッド：指定したメソッドだけスタブ化
@@ -204,6 +213,7 @@ class ExampleTest extends PHPUnit_Framework_TestCase {
 
     /**
      * privateメソッドはスタブ化されない
+     *
      * 引数：クラスのみ
      * コンストラクタ：呼ばれない
      * メソッド：全部スタブ化

@@ -3,11 +3,11 @@
 class Example {
 
     private $total = 0;
-    private static $static_total = 2;
+    private static $static_total = 1;
 
     public function __construct() {
         $this->total = 1;
-        self::$static_total = 1;
+        self::$static_total = 2;
     }
 
     public function plusA() {
@@ -36,7 +36,7 @@ class Example {
         $this->total = $total;
     }
 
-    public static function staticFunc() {
+    public static function getStaticTotal() {
         return self::$static_total;
     }
 

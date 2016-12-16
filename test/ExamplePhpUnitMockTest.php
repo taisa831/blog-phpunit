@@ -12,11 +12,10 @@ class ExamplePhpUnitMockTest extends PHPUnit_Framework_TestCase {
     private $example;
 
     /**
-     * 全部メソッドスタブ化
+     * 全メソッド握りつぶす
      *
      * 引数：クラスのみ
      * コンストラクタ：呼ばれない
-     * メソッド：全部スタブ化
      */
     public function test_createMock_all() {
         $this->example = $this->createMock(Example::class);
@@ -31,11 +30,24 @@ class ExamplePhpUnitMockTest extends PHPUnit_Framework_TestCase {
     }
 
     /**
-     * 全部スタブ化しない
+     * 全メソッド握りつぶす
+     * plusAだけ振る舞い設定
+     *
+     * 引数：クラスのみ
+     * コンストラクタ：呼ばれない
+     */
+    public function test_createMock_all_stub() {
+        $this->example = $this->createMock(Example::class);
+        $this->example->expects($this->once())->method('plusA')->willReturn('A');
+        $result = $this->example->plusA();
+        $this->assertEquals('A', $result);
+    }
+
+    /**
+     * 全メソッドスタブ化しない
      *
      * 引数：クラスと空の配列
      * コンストラクタ：呼ばれない
-     * メソッド：全部スタブ化しない
      */
     public function test_createPartialMock_non() {
         $this->example = $this->createPartialMock(Example::class);
@@ -55,7 +67,6 @@ class ExamplePhpUnitMockTest extends PHPUnit_Framework_TestCase {
      *
      * 引数：クラスとメソッド
      * コンストラクタ：呼ばれない
-     * メソッド：指定したメソッドだけスタブ化
      */
     public function test_createPartialMock_partial() {
         $this->example = $this->createPartialMock(Example::class, ['getTotal']);
@@ -72,13 +83,13 @@ class ExamplePhpUnitMockTest extends PHPUnit_Framework_TestCase {
     }
 
     /**
-     * 一部スタブ化&返り値指定
+     * 一部スタブ化
+     * 振る舞い設定
      *
      * 引数：クラスとメソッド
      * コンストラクタ：呼ばれない
-     * メソッド：一部スタブ化&返り値指定
      */
-    public function test_createPartialMock_setStubMethod() {
+    public function test_createPartialMock_setStub() {
         $this->example = $this->createPartialMock(Example::class, ['getTotal']);
         $this->example->expects($this->once())->method('getTotal')->willReturn(3);
 
@@ -93,13 +104,13 @@ class ExamplePhpUnitMockTest extends PHPUnit_Framework_TestCase {
     }
 
     /**
-     * 一部スタブ化&期待値設定(1 test, 4 assertions)
+     * 一部スタブ化
+     * 期待値設定(1 test, 4 assertions)
      *
      * 引数：クラスとメソッド
      * コンストラクタ：呼ばれない
-     * メソッド：一部スタブ化
      */
-    public function test_createPartialMock_setStubMethod2() {
+    public function test_createPartialMock_setStub2() {
         $this->example = $this->createPartialMock(Example::class, ['setTotal']);
         $this->example->expects($this->once())->method('setTotal')->with(10);
 
@@ -115,11 +126,11 @@ class ExamplePhpUnitMockTest extends PHPUnit_Framework_TestCase {
     }
 
     /**
-     * 全部スタブ化&返り値指定（同時設定）
+     * 全部スタブ化
+     * 返り値指定（同時設定）
      *
      * 引数：クラスと返り値指定した配列
      * コンストラクタ：呼ばれない
-     * メソッド：全部スタブ化&返り値設定
      */
     public function test_createConfiguredMock_setStubMethod() {
         $configuration = ['getTotal' => 3];

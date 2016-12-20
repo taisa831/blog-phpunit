@@ -14,7 +14,7 @@ class ExamplePhakeTest extends PHPUnit_Framework_TestCase {
      * 引数：クラスのみ
      * コンストラクタ：呼ばれない
      */
-    public function test_mock_all() {
+    public function test_mock() {
         $example = Phake::mock(Example::class);
 
         $result = $example->plusA();
@@ -25,13 +25,48 @@ class ExamplePhakeTest extends PHPUnit_Framework_TestCase {
 
         $result = $example->plusC();
         $this->assertNull($result);
-
-        $result = $example::getStaticTotal();
-        $this->assertNull($result);
     }
 
     /**
-     * 全部スタブ化しない
+     * 全部スタブ化
+     * plusAだけ振る舞い設定
+     *
+     * 引数：クラスのみ
+     * コンストラクタ：呼ばれない
+     */
+    public function test_mock_setting() {
+        $example = Phake::mock(Example::class);
+        Phake::when($example)->plusA()->thenReturn('A');
+
+        $result = $example->plusA();
+        $this->assertEquals('A', $result);
+    }
+
+    /**
+     * 全部スタブ化
+     * 振る舞いを一括設定
+     *
+     * 引数：クラスのみ
+     * コンストラクタ：呼ばれない
+     */
+    public function test_mock_setting2() {
+        $example = Phake::mock(Example::class, Phake::ifUnstubbed()->thenReturn('A'));
+
+        $result = $example->plusA();
+        $this->assertEquals('A', $result);
+
+        $result = $example->plusB();
+        $this->assertEquals('A', $result);
+
+        $result = $example->plusC();
+        $this->assertEquals('A', $result);
+
+        $result = Phake::makeVisible($example)->plusD();
+        $this->assertEquals('A', $result);
+    }
+
+    /**
+     * 全部そのまま
      *
      * 引数：クラス（コンストラクタに値を渡す場合は引数追加）
      * コンストラクタ：呼ばれる
@@ -50,8 +85,8 @@ class ExamplePhakeTest extends PHPUnit_Framework_TestCase {
     }
 
     /**
-     * 全部スタブ化しない
-     * 指定したメソッドのみスタブ化
+     * 全部そのまま
+     * 指定したメソッドのみ振る舞い設定
      *
      * 引数：クラス（コンストラクタに値を渡す場合は引数追加）
      * コンストラクタ：呼ばれる
@@ -71,7 +106,7 @@ class ExamplePhakeTest extends PHPUnit_Framework_TestCase {
     }
 
     /**
-     * 全部スタブ化しない
+     * 全部そのまま
      * 期待動作確認(1 test, 5 assertions)
      *
      * 引数：クラス（コンストラクタに値を渡す場合は引数追加）
@@ -98,28 +133,32 @@ class ExamplePhakeTest extends PHPUnit_Framework_TestCase {
     //
 
     /**
-     * 全部スタブ化
-     * staticメソッドをスタブ化
+     * 全部握りつぶし
+     * staticメソッドの振る舞いを設定
      *
      * 引数：クラスのみ
      * コンストラクタ：呼ばれない
      */
     public function test_mock_static() {
         $example = Phake::mock(Example::class);
-        Phake::whenStatic($example)->getStaticTotal()->thenReturn(3);
+        Phake::whenStatic($example)->getStaticTotal()->thenReturn(10);
 
         $result = $example::getStaticTotal();
-        $this->assertEquals(3, $result);
+        $this->assertEquals(10, $result);
     }
 
     /**
-     * 全部スタブ化しない
-     * staticメソッドをスタブ化
+     * 全部握りつぶし
+     * staticメソッドの振る舞いを設定
      *
      * 引数：クラスのみ
      * コンストラクタ：呼ばれない
      */
     public function test_partialMock_static() {
+        // そのまま実行する場合
+        $result = Example::getStaticTotal();
+        $this->assertEquals(1, $result);
+
         $example = Phake::partialMock(Example::class);
 
         // 直接はNG
@@ -138,22 +177,30 @@ class ExamplePhakeTest extends PHPUnit_Framework_TestCase {
     //
 
     /**
-     * 全部スタブ化
-     * privateメソッドを元の処理を呼ぶ
-     * privateメソッドをスタブ化する
+     * 全部握りつぶし
+     * privateメソッドを普通に実行
      *
      * 引数：クラスのみ
      * コンストラクタ：呼ばれない
      */
     public function test_mock_private() {
         $example = Phake::mock(Example::class);
-
-        // 元の処理を呼び出す
         Phake::when($example)->plusD()->thenCallParent();
         // 直接は呼び出せないのでmakeVisibleにてプロキシして実行確認可能
         $result = Phake::makeVisible($example)->plusD();
         $this->assertEquals(1, $result);
+    }
 
+    /**
+     * 全部握りつぶし
+     * privateメソッドをスタブ化する
+     *
+     * 引数：クラスのみ
+     * コンストラクタ：呼ばれない
+     */
+    public function test_mock_private2() {
+        $example = Phake::mock(Example::class);
+        Phake::when($example)->plusD()->thenCallParent();
         // 普通にスタブ化
         Phake::when($example)->plusD()->thenReturn(5);
         // 直接は呼び出せないのでmakeVisibleにてプロキシして実行確認可能
@@ -162,20 +209,28 @@ class ExamplePhakeTest extends PHPUnit_Framework_TestCase {
     }
 
     /**
-     * 全部スタブ化しない
-     * privateメソッドを元の処理を呼ぶ
-     * privateメソッドをスタブ化する
+     * 全部握りつぶさない
+     * privateメソッドを普通に実行
+     *
+     * 引数：クラスのみ
+     * コンストラクタ：呼ばれる
+     */
+    public function test_partialMock_private() {
+        $example = Phake::partialMock(Example::class);
+        // 直接は呼び出せないのでmakeVisibleにてプロキシして実行確認可能
+        $result = Phake::makeVisible($example)->plusD();
+        $this->assertEquals(2, $result);
+    }
+
+    /**
+     * 全部握りつぶさない
+     * privateメソッドの振る舞いを設定
      *
      * 引数：クラスのみ
      * コンストラクタ：呼ばれる
      */
     public function test_partialMock_private2() {
         $example = Phake::partialMock(Example::class);
-
-        // 直接は呼び出せないのでmakeVisibleにてプロキシして実行確認可能
-        $result = Phake::makeVisible($example)->plusD();
-        $this->assertEquals(2, $result);
-
         // 普通にスタブ化
         Phake::when($example)->plusD()->thenReturn(5);
         // 直接は呼び出せないのでmakeVisibleにてプロキシして実行確認可能
